@@ -1,0 +1,238 @@
+.container {
+    padding: 16px;
+    background-color: #000;
+    color: white;
+    min-height: 100vh;
+    font-family: sans-serif;
+    padding-bottom: 60px;
+    direction: rtl;
+    width: 100%;
+    max-width: clamp(320px, 95vw, 900px);
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+}
+
+.businessDetails {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.businessName {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.date {
+    font-size: 14px;
+    opacity: 0.7;
+    margin: 0;
+}
+
+.logo {
+    width: 48px;
+    height: 48px;
+}
+
+.card {
+    background-color: #1a1a1a;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    height: 300px;
+}
+
+.cardBigger {
+    background-color: #1a1a1a;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    height: 360px;
+}
+
+.cardTitle {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.cardSubtitle {
+    font-size: 14px;
+    color: #00aaff;
+    margin-bottom: 12px;
+}
+
+.chartPlaceholder {
+    height: 200px;
+    background-color: #333;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 14px;
+    text-align: center;
+    padding: 15px;
+}
+
+.graphBox {
+    height: 270px;
+    background-color: #333;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 16px;
+    margin-top: 24px;
+}
+
+.grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.backButton {
+    background: none;
+    color: #00aaff;
+    border: none;
+    font-size: 17px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    text-align: right;
+}
+
+.clickableCard {
+    cursor: pointer;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.clickableCard:hover {
+    border: 2px solid #00aaff;
+    box-shadow: 0 0 12px rgba(0, 170, 255, 0.4);
+}
+
+.navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #111;
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    border-top: 1px solid #222;
+    z-index: 10;
+}
+
+.navButton {
+    background: none;
+    color: white;
+    border: none;
+    font-size: 14px;
+    opacity: 0.6;
+    flex: 1;
+    text-align: center;
+}
+
+.navButtonActive {
+    background: none;
+    color: #00aaff;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    flex: 1;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .grid2 {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .cardTitle {
+        font-size: 15px;
+    }
+
+    .cardSubtitle {
+        font-size: 13px;
+    }
+
+    .chartPlaceholder {
+        font-size: 13px;
+        height: 140px;
+    }
+
+    .navbar {
+        padding: 10px 0;
+    }
+
+    .navButton,
+    .navButtonActive {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .cardTitle {
+        font-size: 14px;
+    }
+
+    .cardSubtitle {
+        font-size: 12px;
+    }
+
+    .chartPlaceholder {
+        font-size: 12px;
+        height: 120px;
+    }
+
+    .businessName {
+        font-size: 18px;
+    }
+
+    .date {
+        font-size: 13px;
+    }
+
+    .navbar {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .navButton,
+    .navButtonActive {
+        font-size: 12px;
+        padding: 8px 0;
+    }
+
+    .logo {
+        width: 36px;
+        height: 36px;
+    }
+}
