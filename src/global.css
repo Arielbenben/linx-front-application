@@ -4,4 +4,6 @@ html, body, #root {
   padding: 0;
   background: linear-gradient(to bottom right, #f5f7fa, #c3cfe2); /* צבע רקע מקצועי ועדין */
   font-family: sans-serif;
+  overflow-x: hidden;
+  max-width: 100vw;
 }

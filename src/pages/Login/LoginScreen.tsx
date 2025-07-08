@@ -6,7 +6,15 @@ import { FaUser, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function LoginScreen() {
     const navigate = useNavigate();
-    const { setSmbId, setSmbName } = useUser();
+const { 
+    setSmbId, 
+    setSmbName, 
+    setOwnerName, 
+    setSmbAddress, 
+    setSmbCategory, 
+    setSmbPhoneNumber,
+    setSmbPassword 
+} = useUser();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -37,6 +45,11 @@ export default function LoginScreen() {
             } else {
                 setSmbId(data['smb_id']);
                 setSmbName(data['smb_name']);
+                setOwnerName(data['owner_full_name'])
+                setSmbAddress(data['smb_address'])
+                setSmbPhoneNumber(data['smb_phone_number'])
+                setSmbPassword(password)
+                setSmbCategory(Array.isArray(data['categories']) ? data['categories'] : null);
                 navigate('/dashboard');
             }
         } catch (error) {

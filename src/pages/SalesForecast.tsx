@@ -2,27 +2,28 @@ import { useState } from 'react';
 import styles from './SelfSalesComprison.module.css';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
-import SelfSalesComprisonChart from './Charts/SelfSalesComprisonChart';
+import SalesForecastChart from './Charts/SalesForecastChart';
 
-export default function ComparisonScreen() {
-    const { smbId, smbName, isInitialized } = useUser(); // ✅ נשתמש גם ב־smbId וגם ב־isInitialized
+
+export default function SalesForecast() {
+    const { smbId, smbName, isInitialized } = useUser(); 
     const navigate = useNavigate();
     const formattedDate = new Date().toLocaleDateString('he-IL');
-    const [timeRange, setTimeRange] = useState<'חודשי' | 'שנתי' | 'שבועי'>('שבועי');
+    const [timeRange, setTimeRange] = useState<'חודשי' | 'שבועי'>('שבועי');
 
     if (!isInitialized) {
-        return <div className={styles.spinner}></div>; // או null לפי העדפתך
+        return <div className={styles.spinner}></div>; 
     }
 
     if (!smbId) {
-        return <div className={styles.error}>לא נמצא מזהה עסק</div>; // אפשר להוסיף redirect
+        return <div className={styles.error}>לא נמצא מזהה עסק</div>; 
     }
 
     return (
         <div className={styles.container}>
             <div className={styles.innerContainer}>
                 <div className={styles.header}>
-                    <h3 className={styles.title}>השוואת מכירות לעומת העבר</h3>
+                    <h3 className={styles.title}>תחזית תשואה לעסק</h3>
                     <span className={styles.arrow} onClick={() => navigate('/dashboard')}>{'< Back'}</span>
                 </div>
 
@@ -49,20 +50,14 @@ export default function ComparisonScreen() {
                     >
                         חודשי
                     </button>
-                    <button
-                        className={`${styles.selectButton} ${timeRange === 'שנתי' ? styles.selectButtonActive : ''}`}
-                        onClick={() => setTimeRange('שנתי')}
-                    >
-                        שנתי
-                    </button>
                 </div>
 
                 <div className={styles.highlight}>
-                    {timeRange} - השוואת מכירות לעומת העבר
+                    {timeRange} - תחזית תשואה לעסק
                 </div>
 
                 <div className={styles.graphBox}>
-                    <SelfSalesComprisonChart timeRange={timeRange} />
+                    <SalesForecastChart timeRange={timeRange} />
                 </div>
             </div>
         </div>

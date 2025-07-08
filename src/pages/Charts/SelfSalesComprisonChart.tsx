@@ -75,7 +75,7 @@ export default function NewReturningCustomersChart({ timeRange }: ChartProps) {
     const cacheRef = useRef<Map<string, any>>(new Map());
 
     if (!isInitialized) return null;
-    if (!smbId) return <div className={styles.spinner}>לא נמצא מזהה עסק</div>;
+    if (!smbId) return <div className={styles.spinner}></div>;
 
     useEffect(() => {
         const cacheKey = `selfSalesChart-${smbId}-${timeRange}`;

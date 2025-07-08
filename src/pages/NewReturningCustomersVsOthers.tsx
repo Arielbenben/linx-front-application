@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from './ComparisonScreen.module.css';
+import styles from './NewReturningCustomersVsOthers.module.css';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import NewReturningCustomersChart from './Charts/NewReturningCustomersChart';
