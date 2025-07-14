@@ -21,26 +21,50 @@ interface ChartProps {
 }
 
 function getApiUrl(timeRange: TimeRange, smbId: number): string {
-    const base = 'https://render-d9ko.onrender.com/api/analyze/new-customers/';
+    const base = 'http://192.168.33.10:8080/api/analyze/new-customers/';
     return `${base}${timeRange === 'חודשי' ? 'monthly' : 'yearly'}/${smbId}`;
 }
 
+let myNew: number[] = [];
+let myReturning: number[] = [];
+let othersNew: number[] = [];
+let othersReturning: number[] = [];
+
 function buildChartData(apiData: any[], smbName: string) {
     const labels = apiData.map(item => {
-        const dateStr = item.week || item.month;
-        const date = new Date(dateStr);
+        if (item.week) {
+            // במקרה של 'חודשי', הצגת טווח השבועות כפי שהיה (ללא שינוי)
+            const date = new Date(item.week);
 
-        const options: Intl.DateTimeFormatOptions = item.month
-            ? { month: 'short', year: '2-digit' }
-            : { day: '2-digit', month: '2-digit', year: '2-digit' };
+            // חישוב תחילת וסוף השבוע בציר ה-X בפורמט "19-25/05" (ללא השנה)
+            const startOfWeek = new Date(date);
+            startOfWeek.setDate(date.getDate() - date.getDay()); // תחילת השבוע (יום ראשון)
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6); // הוספת 6 ימים לסוף השבוע (יום שבת)
 
-        return date.toLocaleDateString('he-IL', options);
+            const startDay = String(startOfWeek.getDate()).padStart(2, '0');
+            const endDay = String(endOfWeek.getDate()).padStart(2, '0');
+            const month = String(startOfWeek.getMonth() + 1).padStart(2, '0');
+
+            return `${startDay}-${endDay}/${month}`;  // כמו "19-25/05"
+        } else if (item.month) {
+            // במקרה של 'שנתי', הצגת החודש בקיצור והצגת 25 או 24 לפי השנה
+            const date = new Date(item.month);
+            const currentYear = new Date().getFullYear();
+            const monthShort = date.toLocaleString('he-IL', { month: 'short' });  // קיצור החודש בעברית
+
+            // קביעת היום (אם השנה הנוכחית הצג 25, אם שנה קודמת הצג 24)
+            const day = (date.getFullYear() === currentYear) ? '25' : '24';
+
+            return `${monthShort} ${day}`;  // כמו "ינו' 25", "פבר' 24"
+        }
+        return '';  // ברירת מחדל אם אין נתונים
     });
 
-    const myNew = apiData.map(item => item.smb_target.avg_new_customers);
-    const myReturning = apiData.map(item => item.smb_target.avg_returning_customers);
-    const othersNew = apiData.map(item => item.others.avg_new_customers);
-    const othersReturning = apiData.map(item => item.others.avg_returning_customers);
+    myNew = apiData.map(item => item.smb_target.avg_new_customers);
+    myReturning = apiData.map(item => item.smb_target.avg_returning_customers);
+    othersNew = apiData.map(item => item.others.avg_new_customers);
+    othersReturning = apiData.map(item => item.others.avg_returning_customers);
 
     return {
         labels,
@@ -139,6 +163,28 @@ export default function NewReturningCustomersChart({ timeRange }: ChartProps) {
                         backgroundColor: '#333',
                         titleColor: '#fff',
                         bodyColor: '#fff',
+                        rtl: true,
+                        textDirection: 'rtl',
+                        callbacks: {
+                            title: (context: any) => {
+                                // השתמש ב-context[0] אם יש יותר מ-1 טוליפ
+                                const label = context[0]?.label || '';
+                                return label;  // הצגת התאריך או החודש עם השנה
+                            },
+                            label: (context: any) => {
+                                const value = Math.round(context.formattedValue);
+                                const businessType = context.dataset.label;  // "העסק שלי" או "עסקים דומים"
+
+                                const isNew = businessType.includes('חדשים');
+
+                                // הצגת לקוחות חדשים או ישנים
+                                if (isNew) {
+                                    return `לקוחות חדשים: ${value}`;
+                                } else {
+                                    return `לקוחות ישנים: ${value}`;
+                                }
+                            }
+                        }
                     },
                     legend: {
                         position: 'bottom',
@@ -158,6 +204,15 @@ export default function NewReturningCustomersChart({ timeRange }: ChartProps) {
                         grid: { display: false },
                     },
                     y: {
+                        title: {
+                            display: true,
+                            text: 'מספר לקוחות',
+                            color: '#fff',
+                            font: {
+                                size: 16,
+                                weight: 'bold',
+                            },
+                        },
                         ticks: { color: '#ccc' },
                         grid: {
                             color: '#444',

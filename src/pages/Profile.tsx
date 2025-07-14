@@ -186,40 +186,36 @@ export default function DashboardProfile() {
                     </div>
                 </div>
             </div>
+
             <div className={styles.cardBigger}>
                 <p className={styles.cardTitle}>יצירת קשר:</p>
                 <div className={styles.chartPlaceholderInnerContact}>
-                    <div className={styles.innerProfileBox}>
+                    <form className={styles.contactForm} onSubmit={(e) => { e.preventDefault(); handleSendRequest(); }}>
                         {requestSent ? (
                             <p className={styles.sentMessage}>✔ הבקשה נשלחה בהצלחה!</p>
                         ) : (
                             <>
-                                <div className={styles.inputGroup}>
-                                    <label className={styles.inputLabel} htmlFor="request">בקשה</label>
-                                    <textarea
-                                        id="request"
-                                        name="request"
-                                        value={requestText}
-                                        onChange={(e) => setRequestText(e.target.value)}
-                                        className={styles.requestBox}
-                                        placeholder="כתוב/כתבי את הבקשה כאן..."
-                                    />
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                    <button
-                                        className={styles.saveButton}
-                                        onClick={handleSendRequest}
-                                        disabled={requestText.trim().length < 1}
-                                    >
-                                        שליחת בקשה
-                                    </button>
-                                </div>
+                                <label className={styles.contactLabel} htmlFor="request">בקשה</label>
+                                <textarea
+                                    id="request"
+                                    name="request"
+                                    value={requestText}
+                                    onChange={(e) => setRequestText(e.target.value)}
+                                    className={styles.requestBox}
+                                    placeholder="כתוב/כתבי את הבקשה כאן..."
+                                />
+                                <button
+                                    type="submit"
+                                    className={styles.contactButton}
+                                    disabled={requestText.trim().length < 1}
+                                >
+                                    שליחת בקשה
+                                </button>
                             </>
                         )}
-                    </div>
+                    </form>
                 </div>
             </div>
-
 
             <div className={styles.navbar}>
                 <button className={styles.navButton} onClick={() => navigate('/dashboard')}>

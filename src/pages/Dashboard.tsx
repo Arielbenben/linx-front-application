@@ -9,14 +9,15 @@ import WeeklySelfSalesComprisonChart from './Charts/SelfSalesComprisonChart';
 export default function DashboardScreen() {
     const { smbName } = useUser();
     const navigate = useNavigate();
-    const formattedDate = new Date().toLocaleDateString('he-IL');
+    const customDate = new Date(2025, 6, 13); // חודש 5 (מאי) הוא 4, יום 31
+    const formattedCustomDate = customDate.toLocaleDateString('he-IL');
 
     return (
         <div className={styles.container}>
             <div className={styles.header}>
                 <div className={styles.businessDetails}>
                     <p className={styles.businessName}>{smbName || 'שם העסק'}</p>
-                    <p className={styles.date}>{formattedDate}</p>
+                    <p className={styles.date}>{formattedCustomDate}</p>
                 </div>
                 <img src="/linx-logo.png" alt="Linx Logo" className={styles.logo} />
             </div>
@@ -26,9 +27,9 @@ export default function DashboardScreen() {
                 onClick={() => navigate('/comparison')}
             >
                 <p className={styles.cardTitle}>השוואת מכירות/קונים/המלצות</p>
-                <p className={styles.cardSubtitle}>שבועי - קונים</p>
+                <p className={styles.cardSubtitle}>שנתי - מכירות</p>
                 <div className={styles.chartPlaceholder}>
-                    <WeeklyComparisonChart timeRange="שבועי" dataType="קונים" />
+                    <WeeklyComparisonChart timeRange="שנתי" dataType="מכירות" />
                 </div>
             </div>
 
@@ -37,8 +38,8 @@ export default function DashboardScreen() {
                     className={`${styles.card} ${styles.clickableCard}`}
                     onClick={() => navigate('/SalesForecast')}
                 >
-                    <p className={styles.cardTitle}>תחזית תשואה בעסק</p>
-                    <p className={styles.cardSubtitle}>חודשי</p>
+                    <p className={styles.cardTitle}>תחזית תנועה בעסק</p>
+                    <p className={styles.cardSubtitle}>שבועי</p>
                     <div className={styles.chartPlaceholder}>
                         <SalesForecastChart timeRange="שבועי" />
                     </div>

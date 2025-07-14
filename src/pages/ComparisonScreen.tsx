@@ -8,10 +8,12 @@ export default function ComparisonScreen() {
     const { smbName } = useUser();
     const navigate = useNavigate();
 
-    const formattedDate = new Date().toLocaleDateString('he-IL');
+    const customDate = new Date(2025, 6, 13); // חודש 5 (מאי) הוא 4, יום 31
+    const formattedCustomDate = customDate.toLocaleDateString('he-IL');
 
-    const [timeRange, setTimeRange] = useState<'חודשי' | 'שבועי'>('שבועי');
-    const [dataType, setDataType] = useState<'קונים' | 'מכירות' | 'המלצות'>('קונים');
+
+    const [timeRange, setTimeRange] = useState<'חודשי' | 'שנתי'>('שנתי');
+    const [dataType, setDataType] = useState<'קונים' | 'מכירות' | 'המלצות'>('מכירות');
 
     return (
         <div className={styles.container}>
@@ -26,23 +28,23 @@ export default function ComparisonScreen() {
                 <div className={styles.topRow}>
                     <div className={styles.businessInfo}>
                         <p className={styles.businessName}>{smbName || 'שם העסק'}</p>
-                        <p className={styles.date}>{formattedDate}</p>
+                        <p className={styles.date}>{formattedCustomDate}</p>
                     </div>
                     <img className={styles.logo} src="/linx-logo.png" alt="logo" />
                 </div>
 
                 <div className={styles.buttonRow}>
                     <button
+                        className={`${styles.selectButton} ${timeRange === 'שנתי' ? styles.selectButtonActive : ''}`}
+                        onClick={() => setTimeRange('שנתי')}
+                    >
+                        שנתי
+                    </button>
+                    <button
                         className={`${styles.selectButton} ${timeRange === 'חודשי' ? styles.selectButtonActive : ''}`}
                         onClick={() => setTimeRange('חודשי')}
                     >
                         חודשי
-                    </button>
-                    <button
-                        className={`${styles.selectButton} ${timeRange === 'שבועי' ? styles.selectButtonActive : ''}`}
-                        onClick={() => setTimeRange('שבועי')}
-                    >
-                        שבועי
                     </button>
                 </div>
 

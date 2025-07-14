@@ -21,7 +21,7 @@ interface ChartProps {
 }
 
 function getApiUrl(timeRange: TimeRange, smbId: number): string {
-    const base = 'https://render-d9ko.onrender.com/api/analyze/sales-forecast/';
+    const base = 'http://192.168.33.10:8080/api/analyze/sales-forecast/';
     return `${base}${timeRange === 'שבועי' ? 'weekly' : 'monthly'}/${smbId}`;
 }
 
@@ -30,8 +30,16 @@ function buildChartData(apiData: any[], smbName: string) {
         const dateStr = item.date;
         const date = new Date(dateStr);
 
-        const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit' };
-        return date.toLocaleDateString('he-IL', options);
+        // שמות הימים בעברית
+        const dayNames = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+        const dayName = dayNames[date.getDay()];
+
+        // תאריך בפורמט DD.MM
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const dateFormatted = `${day}.${month}`;
+
+        return `${dayName} - ${dateFormatted}`;
     });
 
     const predictedSales = apiData.map(item => item.predicted_transactions);
@@ -40,7 +48,7 @@ function buildChartData(apiData: any[], smbName: string) {
         labels,
         datasets: [
             {
-                label: `${smbName || 'העסק שלי'}: תחזית מכירות`,
+                label: `${smbName || 'העסק שלי'}: תחזית עסקאות`,
                 data: predictedSales,
                 borderColor: '#00c853',
                 backgroundColor: 'transparent',
@@ -106,6 +114,14 @@ export default function SalesForecastChart({ timeRange }: ChartProps) {
                         backgroundColor: '#333',
                         titleColor: '#fff',
                         bodyColor: '#fff',
+                        rtl: true,
+                        textDirection: 'rtl',
+                        callbacks: {
+                            label: function (context) {
+                                const value = Math.round(context.parsed.y);
+                                return ` תחזית: ${value} עסקאות`;
+                            }
+                        }
                     },
                     legend: {
                         position: 'bottom',
@@ -136,6 +152,7 @@ export default function SalesForecastChart({ timeRange }: ChartProps) {
                     y: {
                         title: {
                             display: true,
+                            text: 'מספר עסקאות',
                             color: '#fff',
                             font: {
                                 size: 16,

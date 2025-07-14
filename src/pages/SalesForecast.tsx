@@ -6,24 +6,25 @@ import SalesForecastChart from './Charts/SalesForecastChart';
 
 
 export default function SalesForecast() {
-    const { smbId, smbName, isInitialized } = useUser(); 
+    const { smbId, smbName, isInitialized } = useUser();
     const navigate = useNavigate();
-    const formattedDate = new Date().toLocaleDateString('he-IL');
+    const customDate = new Date(2025, 6, 13); // חודש 5 (מאי) הוא 4, יום 31
+    const formattedCustomDate = customDate.toLocaleDateString('he-IL');
     const [timeRange, setTimeRange] = useState<'חודשי' | 'שבועי'>('שבועי');
 
     if (!isInitialized) {
-        return <div className={styles.spinner}></div>; 
+        return <div className={styles.spinner}></div>;
     }
 
     if (!smbId) {
-        return <div className={styles.error}>לא נמצא מזהה עסק</div>; 
+        return <div className={styles.error}>לא נמצא מזהה עסק</div>;
     }
 
     return (
         <div className={styles.container}>
             <div className={styles.innerContainer}>
                 <div className={styles.header}>
-                    <h3 className={styles.title}>תחזית תשואה לעסק</h3>
+                    <h3 className={styles.title}>תחזית עסקאות לעסק</h3>
                     <span className={styles.arrow} onClick={() => navigate('/dashboard')}>{'< Back'}</span>
                 </div>
 
@@ -32,7 +33,7 @@ export default function SalesForecast() {
                 <div className={styles.topRow}>
                     <div className={styles.businessInfo}>
                         <p className={styles.businessName}>{smbName || 'שם העסק'}</p>
-                        <p className={styles.date}>{formattedDate}</p>
+                        <p className={styles.date}>{formattedCustomDate}</p>
                     </div>
                     <img className={styles.logo} src="/linx-logo.png" alt="logo" />
                 </div>
@@ -53,7 +54,7 @@ export default function SalesForecast() {
                 </div>
 
                 <div className={styles.highlight}>
-                    {timeRange} - תחזית תשואה לעסק
+                    {timeRange} - תחזית עסקאות לעסק
                 </div>
 
                 <div className={styles.graphBox}>

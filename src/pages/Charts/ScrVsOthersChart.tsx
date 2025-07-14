@@ -15,7 +15,7 @@ import styles from './Chart.module.css';
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
 type DataType = 'מכירות' | 'קונים' | 'המלצות';
-type TimeRange = 'שבועי' | 'חודשי';
+type TimeRange = 'שנתי' | 'חודשי';
 
 interface ComparisonChartProps {
   timeRange: TimeRange;
@@ -23,39 +23,64 @@ interface ComparisonChartProps {
 }
 
 function getApiUrl(timeRange: TimeRange, dataType: DataType, smbId: number): string {
-  const base = 'https://render-d9ko.onrender.com/api/analyze/';
+  const base = 'http://192.168.33.10:8080/api/analyze/';
   const path = {
     'קונים': 'compare-customers',
     'מכירות': 'compare-sales',
     'המלצות': 'compare-recommendations',
   }[dataType];
-  return `${base}${path}/${timeRange === 'חודשי' ? 'monthly' : 'weekly'}/${smbId}`;
+  return `${base}${path}/${timeRange === 'שנתי' ? 'monthly' : 'weekly'}/${smbId}`;
 }
 
 function buildComparisonChartData(apiData: any[], dataType: DataType, smbName: string, timeRange: TimeRange) {
-  const labels = apiData.map(item => {
+  let sortedData = apiData;
+
+  if (timeRange === 'שנתי') {
+    // מיון התאריכים כך שהחודשים יוצגו בסדר כרונולוגי (מהחודש הכי ישן ועד הכי חדש)
+    sortedData = apiData.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
+  }
+
+  const labels = sortedData.map(item => {
     const date = new Date(item.start_date);
-    return date.toLocaleDateString('he-IL', timeRange === 'חודשי'
-      ? { month: 'short', year: '2-digit' }
-      : { day: '2-digit', month: '2-digit' }
-    );
+    const month = date.getMonth(); // חודש (מתחיל מ-0)
+
+    // אם timeRange == 'שנתי', הצג את החודש בקיצור עם סימן קיצור ואת השנה
+    if (timeRange === 'שנתי') {
+      const options: Intl.DateTimeFormatOptions = { month: 'short', year: '2-digit' };  // חודש בקיצור ושנה ב-2 ספרות
+      return date.toLocaleDateString('he-IL', options);  // יניב תוצאה כמו "ינו׳ 25"
+    }
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const startMonth = String(date.getMonth() + 1).padStart(2, '0'); // חודש של תחילת השבוע
+    const endOfWeek = new Date(date);
+    endOfWeek.setDate(date.getDate() + 6); // הוספת 6 ימים לסיום השבוע
+    const endDay = String(endOfWeek.getDate()).padStart(2, '0');
+
+    // אם timeRange == 'חודשי', הצג את תחילת וסוף השבוע בצורה של "04-11/07"
+    if (timeRange === 'חודשי') {
+      return `${day}-${endDay}/${startMonth}`;  // תחילת וסוף השבוע + חודש
+    }
+
+    // במקרה של timeRange == 'שבועי', הצג את היום-חודש כמו "01-07"
+    return `${day}-${String(month + 1).padStart(2, '0')}`; // הצגת יום-חודש
   });
 
   let myData: number[] = [];
   let othersData: number[] = [];
 
+  // כאן אנחנו מחשבים את המידע שברצוננו להציג בגרף
   switch (dataType) {
     case 'מכירות':
-      myData = apiData.map(item => item.my_total_transaction_amount);
-      othersData = apiData.map(item => item.similar_avg_transaction_amount);
+      myData = sortedData.map(item => item.my_total_transaction_amount);
+      othersData = sortedData.map(item => item.similar_avg_transaction_amount);
       break;
     case 'קונים':
-      myData = apiData.map(item => item.my_customers_count);
-      othersData = apiData.map(item => item.similar_avg_customers_count);
+      myData = sortedData.map(item => item.my_customers_count);
+      othersData = sortedData.map(item => item.similar_avg_customers_count);
       break;
     case 'המלצות':
-      myData = apiData.map(item => item.my_recommendations_count);
-      othersData = apiData.map(item => item.similar_avg_recommendations_count);
+      myData = sortedData.map(item => item.my_recommendations_count);
+      othersData = sortedData.map(item => item.similar_avg_recommendations_count);
       break;
   }
 
@@ -128,6 +153,8 @@ export default function ComparisonChart({ timeRange, dataType }: ComparisonChart
   return (
     <Line
       data={chartData}
+      // בקובץ ComparisonChart.tsx, החלף את הקוד של options בחלק הטולטיפ:
+
       options={{
         responsive: true,
         plugins: {
@@ -136,6 +163,33 @@ export default function ComparisonChart({ timeRange, dataType }: ComparisonChart
             backgroundColor: '#333',
             titleColor: '#fff',
             bodyColor: '#fff',
+            rtl: true,
+            textDirection: 'rtl',
+            callbacks: {
+              title: (context: any) => {
+                // הצגת התאריך כולל השנה
+                const label = context[0].label;
+                return label;  // מציג את התאריך או החודש עם השנה
+              },
+              label: (context: any) => {
+                const rawValue = Math.round(context.raw); // הערך המעוגל של ה-tooltip
+                const value = rawValue.toLocaleString('he-IL'); // הוספת פסיקים לפי סטנדרט עברי
+                const businessType = context.dataset.label; // "העסק שלי" או "עסקים דומים"
+
+                // הגדרת הסיומת בהתאם ל-dataType שמגיע מהפרופס
+                let suffix = '';
+                if (dataType === 'מכירות') {
+                  suffix = ' ש"ח';
+                } else if (dataType === 'קונים') {
+                  suffix = ' קונים';
+                } else if (dataType === 'המלצות') {
+                  suffix = ' המלצות';
+                }
+
+                // מחזירים את המידע בפורמט המבוקש
+                return `${businessType}: ${value}${suffix}`;
+              }
+            }
           },
           legend: {
             position: 'bottom',
@@ -156,6 +210,15 @@ export default function ComparisonChart({ timeRange, dataType }: ComparisonChart
             grid: { display: false },
           },
           y: {
+            title: {
+              display: true,
+              text: getYAxisLabel(dataType),  // פונקציה שתתן את הכיתוב לפי ה-dataType
+              color: '#fff',  // צבע הכיתוב
+              font: {
+                size: 16,
+                weight: 'bold',
+              },
+            },
             ticks: { color: '#ccc' },
             grid: {
               color: '#444',
@@ -167,3 +230,17 @@ export default function ComparisonChart({ timeRange, dataType }: ComparisonChart
     />
   );
 }
+
+function getYAxisLabel(dataType: string) {
+  switch (dataType) {
+    case 'מכירות':
+      return 'מכירות בשקלים';
+    case 'קונים':
+      return 'מספר קונים';
+    case 'המלצות':
+      return 'מספר המלצות';
+    default:
+      return '';
+  }
+}
+    

@@ -26,7 +26,7 @@ const {
         setErrorMessage('');
         setLoading(true);
 
-        const url = 'https://render-d9ko.onrender.com/api/auth/';
+        const url = 'http://192.168.33.10:8080/api/auth/';
 
         try {
             const response = await fetch(url, {

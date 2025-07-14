@@ -7,7 +7,8 @@ import NewReturningCustomersChart from './Charts/NewReturningCustomersChart';
 export default function ComparisonScreen() {
   const { smbName } = useUser();
   const navigate = useNavigate();
-  const formattedDate = new Date().toLocaleDateString('he-IL');
+  const customDate = new Date(2025, 6, 13); // חודש 5 (מאי) הוא 4, יום 31
+  const formattedCustomDate = customDate.toLocaleDateString('he-IL');
 
   const [timeRange, setTimeRange] = useState<'חודשי' | 'שנתי'>('חודשי');
 
@@ -24,7 +25,7 @@ export default function ComparisonScreen() {
         <div className={styles.topRow}>
           <div className={styles.businessInfo}>
             <p className={styles.businessName}>{smbName || 'שם העסק'}</p>
-            <p className={styles.date}>{formattedDate}</p>
+            <p className={styles.date}>{formattedCustomDate}</p>
           </div>
           <img className={styles.logo} src="/linx-logo.png" alt="logo" />
         </div>

@@ -71,15 +71,8 @@
     margin-bottom: 16px;
 }
 
-.businessInfo {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    text-align: right;
-}
-
 .businessName {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
     margin: 0;
 }

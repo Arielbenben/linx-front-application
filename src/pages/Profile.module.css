@@ -81,16 +81,15 @@
     padding: 15px;
 }
 
-.chartPlaceholderContact {
-    min-height: 250px;
-    height: auto;
-    background-color: #333;
-    border-radius: 8px;
-    display: flex;
-    color: #888;
-    font-size: 14px;
-    text-align: center;
-    padding: 15px;
+.chartPlaceholderInnerContact {
+  background-color: #2a2a2a;
+  border-radius: 12px;
+  padding: 24px;
+  color: #ccc;
+  display: flex;
+  justify-content: flex-end; /* מיישר את התוכן לצד ימין של הכרטיס */
+  align-items: flex-start;
+  direction: rtl;
 }
 
 .innerProfileBox {
@@ -99,53 +98,63 @@
     font-size: 16px;
     line-height: 1.8;
     text-align: right;
-    gap: 12px;
-    height: 100%;
+    width: 100%;
 }
 
 .inputGroup {
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* מיישר את התוכן הפנימי לימין */
+  text-align: right;
+  direction: rtl;
+  gap: 12px;
+  width: 100%;
+  max-width: 480px; /* גבול סביר לרוחב */
 }
 
+
 .inputLabel {
-    font-size: 14px;
-    color: #aaa;
-    margin-bottom: 4px;
+  font-size: 15px;
+  font-weight: bold;
+  color: #ddd;
+  text-align: right;
+  align-self: flex-end; /* מצמיד לימין */
 }
 
 .inputField {
-    width: 75%;
-    padding: 8px 10px;
-    border: 1px solid #00aaff;
-    border-radius: 10px;
-    background-color: #1a1a1a;
-    color: white;
-    font-size: 16px;
-    direction: rtl;
+  width: 100%;
+  max-width: 480px;
+  padding: 12px 16px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: 1px solid #00aaff;
+  background-color: #1a1a1a;
+  color: white;
+  resize: vertical;
+  line-height: 1.6;
+  direction: rtl;
+  text-align: right;
+  font-family: inherit;
 }
+
 
 .editButton,
 .saveButton {
-    padding: 10px 24px;
-    border: none;
-    background-color: #00aaff;
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    border-radius: 12px;
-    cursor: pointer;
-    align-self: center;
-    margin-top: 20px;
-    transition: background 0.3s;
+  align-self: flex-end; /* מקבע אותו בצד ימין */
+  padding: 10px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background-color: #00aaff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .editButton:hover,
 .saveButton:hover {
-    background-color: #008ecc;
+  background-color: #0090dd;
 }
 
 .navbar {
@@ -315,33 +324,33 @@
   padding: 24px;
   color: #ccc;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: flex-start;
   direction: rtl;
 }
 
 .contactForm {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  margin-left: auto;
+  gap: 24px;
   width: 100%;
   max-width: 480px;
-  gap: 20px;
-  direction: rtl;
-  color: white;
 }
 
 .contactLabel {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
   color: white;
-  text-align: right;
+  text-align: left;
+  align-self: flex-start;
 }
 
-.contactTextarea {
+.requestBox {
   width: 100%;
   min-height: 120px;
   padding: 12px 16px;
-  font-size: 16px;
+  font-size: 15px;
   border-radius: 10px;
   border: 1px solid #00aaff;
   background-color: #1a1a1a;
@@ -350,12 +359,13 @@
   line-height: 1.6;
   text-align: right;
   font-family: inherit;
+  direction: rtl;
 }
 
 .contactButton {
   align-self: flex-start;
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
   color: white;
   background-color: #00aaff;
@@ -371,9 +381,10 @@
 
 .sentMessage {
   color: #00ffae;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
-  text-align: right;
+  text-align: left;
+  align-self: flex-start;
 }
 
 @media (max-width: 768px) {
