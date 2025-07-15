@@ -20,7 +20,7 @@ interface ChartProps {
 }
 
 function getApiUrl(timeRange: TimeRange = 'שבועי', smbId: number): string {
-    const base = 'http://192.168.33.10:8080/api/analyze/sales/';
+    const base = 'http://192.168.33.12:8080/api/analyze/sales/';
     const path =
         timeRange === 'חודשי' ? 'monthly' :
             timeRange === 'שנתי' ? 'yearly' :
@@ -39,18 +39,19 @@ function buildChartData(apiData: any[], timeRange: TimeRange): any {
         labels = apiData.map(item => {
             const date = new Date(item.date);
             const dayName = dayNames[date.getDay()];
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            return `${dayName} - ${day}.${month}`; // הצגת יום-חודש
+            // const day = String(date.getDate()).padStart(2, '0');
+            // const month = String(date.getMonth() + 1).padStart(2, '0');
+            return `${dayName}`; // הצגת יום-חודש
         });
         currentData = apiData.map(item => item.current_week);
         previousData = apiData.map(item => item.previous_week);
     } else if (timeRange === 'חודשי') {
-        labels = apiData.map(item => {
-            const weekRange = item.week_range_current_month.split('/')[0];
-            const month = item.week_range_current_month.split('/')[1];
-            return `${weekRange}/${month}`;  // הצגת טווח השבועות + חודש
-        });
+        // labels = apiData.map(item => {
+        //     const weekRange = item.week_range_current_month.split('/')[0];
+        //     const month = item.week_range_current_month.split('/')[1];
+        //     return `${weekRange}/${month}`;  // הצגת טווח השבועות + חודש
+        // });
+        labels = apiData.map((_, index) => `שבוע ${index + 1}`);
 
         currentData = apiData.map(item => item.current_month_week_sales);
         previousData = apiData.map(item => item.previous_month_week_sales);
@@ -215,12 +216,11 @@ export default function NewReturningCustomersChart({ timeRange }: ChartProps) {
                         rtl: true,
                         textDirection: 'rtl',
                         callbacks: {
-                            title: () => '',
+                            title: (context) => context[0].label,
                             label: (context: any) => {
                                 const value = context.formattedValue;
-                                const fullLabel = context.label || '';
-                                const monthOnly = fullLabel.split(' ')[0];
-                                return `${monthOnly}: ${value} ש"ח`;
+                                const label = context.dataset.label
+                                return `${label}: ${value} ש"ח`;
                             }
                         }
                     },

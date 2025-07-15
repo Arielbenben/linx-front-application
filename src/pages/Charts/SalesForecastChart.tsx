@@ -21,7 +21,7 @@ interface ChartProps {
 }
 
 function getApiUrl(timeRange: TimeRange, smbId: number): string {
-    const base = 'http://192.168.33.10:8080/api/analyze/sales-forecast/';
+    const base = 'http://192.168.33.12:8080/api/analyze/sales-forecast/';
     return `${base}${timeRange === 'שבועי' ? 'weekly' : 'monthly'}/${smbId}`;
 }
 

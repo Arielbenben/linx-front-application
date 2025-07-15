@@ -21,7 +21,7 @@ interface ChartProps {
 }
 
 function getApiUrl(timeRange: TimeRange, smbId: number): string {
-    const base = 'http://192.168.33.10:8080/api/analyze/new-customers/';
+    const base = 'http://192.168.33.12:8080/api/analyze/new-customers/';
     return `${base}${timeRange === 'חודשי' ? 'monthly' : 'yearly'}/${smbId}`;
 }
 
@@ -46,7 +46,7 @@ function buildChartData(apiData: any[], smbName: string) {
             const endDay = String(endOfWeek.getDate()).padStart(2, '0');
             const month = String(startOfWeek.getMonth() + 1).padStart(2, '0');
 
-            return `${startDay}-${endDay}/${month}`;  // כמו "19-25/05"
+            return `${endDay}.${month} - ${startDay}.${month}`;  // כמו "19-25/05"
         } else if (item.month) {
             // במקרה של 'שנתי', הצגת החודש בקיצור והצגת 25 או 24 לפי השנה
             const date = new Date(item.month);
@@ -172,18 +172,18 @@ export default function NewReturningCustomersChart({ timeRange }: ChartProps) {
                                 return label;  // הצגת התאריך או החודש עם השנה
                             },
                             label: (context: any) => {
-                                const value = Math.round(context.formattedValue);
-                                const businessType = context.dataset.label;  // "העסק שלי" או "עסקים דומים"
+                                const value = Math.round(context.raw).toLocaleString('he-IL');  // במקום context.formattedValue
+                                const businessType = context.dataset.label;
 
                                 const isNew = businessType.includes('חדשים');
 
-                                // הצגת לקוחות חדשים או ישנים
                                 if (isNew) {
                                     return `לקוחות חדשים: ${value}`;
                                 } else {
                                     return `לקוחות ישנים: ${value}`;
                                 }
                             }
+
                         }
                     },
                     legend: {

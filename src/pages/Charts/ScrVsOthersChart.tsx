@@ -23,7 +23,7 @@ interface ComparisonChartProps {
 }
 
 function getApiUrl(timeRange: TimeRange, dataType: DataType, smbId: number): string {
-  const base = 'http://192.168.33.10:8080/api/analyze/';
+  const base = 'http://192.168.33.12:8080/api/analyze/';
   const path = {
     'קונים': 'compare-customers',
     'מכירות': 'compare-sales',
@@ -58,7 +58,7 @@ function buildComparisonChartData(apiData: any[], dataType: DataType, smbName: s
 
     // אם timeRange == 'חודשי', הצג את תחילת וסוף השבוע בצורה של "04-11/07"
     if (timeRange === 'חודשי') {
-      return `${day}-${endDay}/${startMonth}`;  // תחילת וסוף השבוע + חודש
+      return `${endDay}.${startMonth} - ${day}.${startMonth}`;  // תחילת וסוף השבוע + חודש
     }
 
     // במקרה של timeRange == 'שבועי', הצג את היום-חודש כמו "01-07"
